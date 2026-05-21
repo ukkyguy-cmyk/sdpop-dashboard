@@ -8,138 +8,132 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #0a0a0a;
-    --panel: #111111;
-    --border: #1e1e1e;
-    --gold: #c9a84c;
-    --gold-dim: #7a6228;
-    --gold-faint: rgba(201,168,76,0.07);
-    --text: #e8e0cc;
-    --muted: #555;
-    --accent: #e8c96a;
-    --font-body: 'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif;
-    --font-display: 'Bebas Neue', sans-serif;
-  }
-  body { background: #0a0a0a; color: #e8e0cc; font-family: 'Zen Kaku Gothic New', 'Noto Sans JP', sans-serif; min-height: 100vh; }
+  body { background: #0a0a0a; color: #e8e0cc; font-family: 'Zen Kaku Gothic New','Noto Sans JP',sans-serif; min-height: 100vh; }
 
   /* UPLOAD */
-  #upload-screen { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; position: relative; }
-  #upload-screen::before { content: ''; position: fixed; inset: 0; background: radial-gradient(circle at 15% 85%, rgba(201,168,76,0.05) 0%, transparent 50%), radial-gradient(circle at 85% 15%, rgba(201,168,76,0.03) 0%, transparent 50%); pointer-events: none; }
-  .upload-label { font-size: 11px; letter-spacing: 0.3em; color: #7a6228; text-transform: uppercase; margin-bottom: 16px; }
-  .upload-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(40px, 10vw, 80px); color: #c9a84c; letter-spacing: 0.05em; line-height: 1; text-align: center; margin-bottom: 8px; }
-  .upload-sub { font-size: 13px; color: #555; letter-spacing: 0.15em; margin-bottom: 48px; }
-  #drop-zone { width: min(480px, 90vw); border: 1px dashed #7a6228; border-radius: 2px; padding: 48px 32px; text-align: center; cursor: pointer; transition: all 0.2s; }
-  #drop-zone:hover, #drop-zone.drag-over { border-color: #c9a84c; background: rgba(201,168,76,0.07); }
-  #drop-zone .dz-icon { font-size: 36px; margin-bottom: 16px; }
-  #drop-zone .dz-main { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: #c9a84c; letter-spacing: 0.1em; margin-bottom: 8px; }
-  #drop-zone .dz-hint { font-size: 12px; color: #555; }
-  #csv-input { display: none; }
-  .upload-note { margin-top: 32px; font-size: 11px; color: #7a6228; letter-spacing: 0.08em; }
+  #upload-screen { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
+  #upload-screen::before { content:''; position:fixed; inset:0; background: radial-gradient(circle at 15% 85%,rgba(201,168,76,.05) 0%,transparent 50%),radial-gradient(circle at 85% 15%,rgba(201,168,76,.03) 0%,transparent 50%); pointer-events:none; }
+  .upload-label { font-size:11px; letter-spacing:.3em; color:#7a6228; text-transform:uppercase; margin-bottom:16px; }
+  .upload-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(40px,10vw,80px); color:#c9a84c; letter-spacing:.05em; line-height:1; text-align:center; margin-bottom:8px; }
+  .upload-sub { font-size:13px; color:#555; letter-spacing:.15em; margin-bottom:48px; }
+  #drop-zone { width:min(480px,90vw); border:1px dashed #7a6228; border-radius:2px; padding:48px 32px; text-align:center; cursor:pointer; transition:all .2s; }
+  #drop-zone:hover,#drop-zone.drag-over { border-color:#c9a84c; background:rgba(201,168,76,.07); }
+  #drop-zone .dz-icon { font-size:36px; margin-bottom:16px; }
+  #drop-zone .dz-main { font-family:'Bebas Neue',sans-serif; font-size:18px; color:#c9a84c; letter-spacing:.1em; margin-bottom:8px; }
+  #drop-zone .dz-hint { font-size:12px; color:#555; }
+  #csv-input { display:none; }
+  .upload-note { margin-top:32px; font-size:11px; color:#7a6228; letter-spacing:.08em; }
 
-  /* DASHBOARD */
-  #dashboard { display: none; }
-  .header { border-bottom: 1px solid #1e1e1e; padding: 0 24px; position: sticky; top: 0; background: rgba(10,10,10,0.95); backdrop-filter: blur(8px); z-index: 100; }
-  .header-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 56px; }
-  .header-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: #c9a84c; letter-spacing: 0.1em; }
-  .header-sub { font-size: 10px; color: #555; letter-spacing: 0.15em; margin-left: 12px; }
-  .btn-reset { font-size: 10px; color: #555; background: none; border: 1px solid #1e1e1e; border-radius: 2px; padding: 4px 12px; cursor: pointer; letter-spacing: 0.1em; font-family: 'Zen Kaku Gothic New', sans-serif; transition: all 0.15s; }
-  .btn-reset:hover { border-color: #7a6228; color: #c9a84c; }
+  /* HEADER / TABS */
+  #dashboard { display:none; }
+  .header { border-bottom:1px solid #1e1e1e; padding:0 24px; position:sticky; top:0; background:rgba(10,10,10,.96); backdrop-filter:blur(8px); z-index:100; }
+  .header-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:56px; }
+  .header-title { font-family:'Bebas Neue',sans-serif; font-size:22px; color:#c9a84c; letter-spacing:.1em; }
+  .header-sub { font-size:10px; color:#555; letter-spacing:.15em; margin-left:12px; }
+  .btn-reset { font-size:10px; color:#555; background:none; border:1px solid #1e1e1e; border-radius:2px; padding:4px 12px; cursor:pointer; letter-spacing:.1em; font-family:'Zen Kaku Gothic New',sans-serif; transition:all .15s; }
+  .btn-reset:hover { border-color:#7a6228; color:#c9a84c; }
+  .tabs { border-bottom:1px solid #1e1e1e; padding:0 24px; background:#0a0a0a; }
+  .tabs-inner { max-width:1100px; margin:0 auto; display:flex; overflow-x:auto; scrollbar-width:none; }
+  .tabs-inner::-webkit-scrollbar { display:none; }
+  .tab-btn { background:none; border:none; border-bottom:2px solid transparent; color:#555; font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:.15em; padding:14px 20px; cursor:pointer; white-space:nowrap; transition:all .15s; }
+  .tab-btn:hover { color:#e8e0cc; }
+  .tab-btn.active { color:#c9a84c; border-bottom-color:#c9a84c; }
 
-  .tabs { border-bottom: 1px solid #1e1e1e; padding: 0 24px; background: #0a0a0a; }
-  .tabs-inner { max-width: 1100px; margin: 0 auto; display: flex; overflow-x: auto; scrollbar-width: none; }
-  .tabs-inner::-webkit-scrollbar { display: none; }
-  .tab-btn { background: none; border: none; border-bottom: 2px solid transparent; color: #555; font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 0.15em; padding: 14px 20px; cursor: pointer; white-space: nowrap; transition: all 0.15s; }
-  .tab-btn:hover { color: #e8e0cc; }
-  .tab-btn.active { color: #c9a84c; border-bottom-color: #c9a84c; }
+  /* CONTENT */
+  .content { max-width:1100px; margin:0 auto; padding:24px 24px 64px; }
+  .tab-pane { display:none; }
+  .tab-pane.active { display:block; }
+  .card { background:#111; border:1px solid #1e1e1e; border-radius:2px; padding:20px 24px; margin-bottom:16px; }
+  .card-title { font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:.2em; color:#c9a84c; text-transform:uppercase; margin-bottom:16px; }
 
-  .content { max-width: 1100px; margin: 0 auto; padding: 24px 24px 64px; }
-  .tab-pane { display: none; }
-  .tab-pane.active { display: block; }
+  /* KPI */
+  .kpi-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:12px; margin-bottom:16px; }
+  .kpi-card { background:#111; border:1px solid #1e1e1e; border-radius:2px; padding:20px 16px; text-align:center; }
+  .kpi-value { font-family:'Bebas Neue',sans-serif; font-size:40px; color:#e8c96a; line-height:1; }
+  .kpi-label { font-size:11px; color:#555; letter-spacing:.1em; margin-top:6px; }
 
-  .card { background: #111111; border: 1px solid #1e1e1e; border-radius: 2px; padding: 20px 24px; margin-bottom: 16px; }
-  .card-title { font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 0.2em; color: #c9a84c; text-transform: uppercase; margin-bottom: 16px; }
+  /* CHARTS */
+  .chart-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+  @media(max-width:640px){ .chart-grid { grid-template-columns:1fr; } }
+  .chart-wrap { position:relative; height:240px; }
+  .pie-legend { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:10px; font-size:11px; color:#555; }
+  .legend-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:4px; vertical-align:middle; }
 
-  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 16px; }
-  .kpi-card { background: #111111; border: 1px solid #1e1e1e; border-radius: 2px; padding: 20px 16px; text-align: center; }
-  .kpi-value { font-family: 'Bebas Neue', sans-serif; font-size: 40px; color: #e8c96a; line-height: 1; }
-  .kpi-label { font-size: 11px; color: #555; letter-spacing: 0.1em; margin-top: 6px; }
+  /* KEYWORDS */
+  .kw-bar-wrap { display:flex; flex-direction:column; gap:8px; }
+  .kw-row { display:grid; grid-template-columns:80px 1fr 36px; align-items:center; gap:12px; }
+  .kw-label { font-size:12px; color:#e8e0cc; text-align:right; }
+  .kw-bar-bg { height:20px; background:#1e1e1e; border-radius:2px; overflow:hidden; }
+  .kw-bar-fill { height:100%; background:linear-gradient(90deg,#7a6228,#c9a84c); border-radius:2px; transition:width .8s cubic-bezier(.16,1,.3,1); }
+  .kw-count { font-family:'Bebas Neue',sans-serif; font-size:14px; color:#c9a84c; }
 
-  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-  @media (max-width: 640px) { .chart-grid { grid-template-columns: 1fr; } }
-  .chart-wrap { position: relative; height: 240px; }
+  /* OPINIONS */
+  .search-bar { display:flex; gap:12px; align-items:center; margin-bottom:16px; }
+  .search-input { flex:1; background:#111; border:1px solid #1e1e1e; border-radius:2px; color:#e8e0cc; padding:10px 16px; font-size:13px; font-family:'Zen Kaku Gothic New',sans-serif; outline:none; transition:border-color .15s; }
+  .search-input:focus { border-color:#7a6228; }
+  .search-count { font-size:12px; color:#555; white-space:nowrap; }
+  .opinion-card { background:#111; border:1px solid #1e1e1e; border-radius:2px; padding:16px 20px; margin-bottom:10px; transition:border-color .15s; }
+  .opinion-card:hover { border-color:#7a6228; }
+  .opinion-meta { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px; }
+  .opinion-num { font-family:'Bebas Neue',sans-serif; color:#7a6228; font-size:13px; }
+  .opinion-date { font-size:11px; color:#555; }
+  .tag { font-size:10px; padding:2px 8px; border:1px solid #7a6228; border-radius:2px; color:#c9a84c; letter-spacing:.05em; }
+  .tag.filled { background:rgba(201,168,76,.12); border-color:transparent; }
+  .opinion-text { font-size:13px; line-height:1.9; color:#e8e0cc; white-space:pre-wrap; word-break:break-word; }
+  .empty-state { text-align:center; padding:64px 24px; color:#555; font-size:13px; }
 
-  .search-bar { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
-  .search-input { flex: 1; background: #111111; border: 1px solid #1e1e1e; border-radius: 2px; color: #e8e0cc; padding: 10px 16px; font-size: 13px; font-family: 'Zen Kaku Gothic New', sans-serif; outline: none; transition: border-color 0.15s; }
-  .search-input:focus { border-color: #7a6228; }
-  .search-count { font-size: 12px; color: #555; white-space: nowrap; }
+  /* ACTIONS TAB */
+  .actions-kpi { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:24px; }
+  @media(max-width:480px){ .actions-kpi { grid-template-columns:1fr; } }
+  .akpi { border-radius:2px; padding:18px 20px; display:flex; align-items:center; gap:14px; cursor:pointer; transition:all .15s; border:1px solid transparent; }
+  .akpi:hover { filter:brightness(1.1); }
+  .akpi.selected { border-color:rgba(255,255,255,.15); filter:brightness(1.15); }
+  .akpi-safety { background:rgba(200,60,60,.12); border-color:rgba(200,60,60,.2); }
+  .akpi-review { background:rgba(201,168,76,.08); border-color:rgba(201,168,76,.15); }
+  .akpi-ref    { background:rgba(80,80,80,.12); border-color:#1e1e1e; }
+  .akpi-icon { font-size:26px; }
+  .akpi-body {}
+  .akpi-num { font-family:'Bebas Neue',sans-serif; font-size:36px; line-height:1; }
+  .akpi-safety .akpi-num { color:#e07070; }
+  .akpi-review .akpi-num { color:#c9a84c; }
+  .akpi-ref    .akpi-num { color:#777; }
+  .akpi-name { font-size:11px; color:#555; margin-top:2px; letter-spacing:.05em; }
 
-  .opinion-card { background: #111111; border: 1px solid #1e1e1e; border-radius: 2px; padding: 16px 20px; margin-bottom: 10px; transition: border-color 0.15s; }
-  .opinion-card:hover { border-color: #7a6228; }
-  .opinion-meta { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
-  .opinion-num { font-family: 'Bebas Neue', sans-serif; color: #7a6228; font-size: 13px; }
-  .opinion-date { font-size: 11px; color: #555; }
-  .tag { font-size: 10px; padding: 2px 8px; border: 1px solid #7a6228; border-radius: 2px; color: #c9a84c; letter-spacing: 0.05em; }
-  .tag.filled { background: rgba(201,168,76,0.12); border-color: transparent; }
-  .opinion-text { font-size: 13px; line-height: 1.9; color: #e8e0cc; white-space: pre-wrap; word-break: break-word; }
-  .empty-state { text-align: center; padding: 64px 24px; color: #555; font-size: 13px; }
+  /* グループカード */
+  .group-section { margin-bottom:8px; }
+  .group-card { background:#111; border:1px solid #1e1e1e; border-radius:2px; overflow:hidden; transition:border-color .15s; }
+  .group-card:hover { border-color:#2e2e2e; }
+  .group-card.safety-group { border-left:3px solid #e07070; }
+  .group-card.review-group { border-left:3px solid #c9a84c; }
+  .group-card.ref-group    { border-left:3px solid #333; }
+  .group-header { display:flex; align-items:center; gap:12px; padding:14px 20px; cursor:pointer; user-select:none; }
+  .group-check { width:18px; height:18px; border:1px solid #333; border-radius:2px; background:none; cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all .15s; }
+  .group-check.done { background:#2a3a2a; border-color:#4a7a4a; }
+  .group-check.done::after { content:'✓'; font-size:11px; color:#7ab07a; }
+  .group-summary { flex:1; }
+  .group-keyword { font-size:11px; color:#555; letter-spacing:.08em; margin-bottom:3px; }
+  .group-text { font-size:13px; color:#e8e0cc; line-height:1.6; font-weight:500; }
+  .group-text.done-text { color:#444; text-decoration:line-through; }
+  .group-meta { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+  .group-count { font-family:'Bebas Neue',sans-serif; font-size:22px; color:#e8c96a; line-height:1; }
+  .group-count-label { font-size:10px; color:#555; }
+  .group-toggle { font-size:10px; color:#555; padding:2px 8px; border:1px solid #1e1e1e; border-radius:2px; background:none; cursor:pointer; font-family:'Zen Kaku Gothic New',sans-serif; }
+  .group-detail { display:none; border-top:1px solid #1a1a1a; }
+  .group-detail.open { display:block; }
+  .detail-item { padding:10px 20px 10px 50px; border-bottom:1px solid #1a1a1a; font-size:12px; color:#777; line-height:1.7; }
+  .detail-item:last-child { border-bottom:none; }
+  .detail-num { font-family:'Bebas Neue',sans-serif; color:#3a3a3a; margin-right:6px; }
 
-  .kw-bar-wrap { display: flex; flex-direction: column; gap: 8px; }
-  .kw-row { display: grid; grid-template-columns: 80px 1fr 36px; align-items: center; gap: 12px; }
-  .kw-label { font-size: 12px; color: #e8e0cc; text-align: right; }
-  .kw-bar-bg { height: 20px; background: #1e1e1e; border-radius: 2px; overflow: hidden; }
-  .kw-bar-fill { height: 100%; background: linear-gradient(90deg, #7a6228, #c9a84c); border-radius: 2px; transition: width 0.8s cubic-bezier(0.16,1,0.3,1); }
-  .kw-count { font-family: 'Bebas Neue', sans-serif; font-size: 14px; color: #c9a84c; }
-
-  .pie-legend { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 10px; font-size: 11px; color: #555; }
-  .legend-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
-
-  /* ── ACTIONS TAB ── */
-  .actions-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
-  .btn-analyze {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 14px;
-    letter-spacing: 0.15em;
-    color: #0a0a0a;
-    background: #c9a84c;
-    border: none;
-    border-radius: 2px;
-    padding: 10px 24px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .btn-analyze:hover { background: #e8c96a; }
-  .btn-analyze:disabled { background: #3a3020; color: #7a6228; cursor: not-allowed; }
-
-  .ai-status { font-size: 12px; color: #7a6228; letter-spacing: 0.08em; }
-  .ai-loading { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #c9a84c; }
-  .spinner { width: 14px; height: 14px; border: 2px solid #3a3020; border-top-color: #c9a84c; border-radius: 50%; animation: spin 0.8s linear infinite; display: inline-block; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* テーマ別アクション */
-  .theme-section { margin-bottom: 24px; }
-  .theme-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #1e1e1e; }
-  .theme-name { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: #c9a84c; letter-spacing: 0.1em; }
-  .theme-count { font-size: 11px; color: #555; }
-  .action-item { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #1a1a1a; }
-  .action-item:last-child { border-bottom: none; }
-  .action-priority { font-family: 'Bebas Neue', sans-serif; font-size: 11px; letter-spacing: 0.1em; padding: 3px 8px; border-radius: 2px; white-space: nowrap; min-width: 48px; text-align: center; }
-  .priority-high { background: rgba(180,60,60,0.2); color: #e07070; border: 1px solid rgba(180,60,60,0.3); }
-  .priority-mid { background: rgba(201,168,76,0.15); color: #c9a84c; border: 1px solid rgba(201,168,76,0.25); }
-  .priority-low { background: rgba(80,120,80,0.15); color: #7ab07a; border: 1px solid rgba(80,120,80,0.25); }
-  .action-body { flex: 1; }
-  .action-title { font-size: 13px; color: #e8e0cc; font-weight: 500; margin-bottom: 4px; line-height: 1.5; }
-  .action-detail { font-size: 12px; color: #555; line-height: 1.6; }
-  .action-source { font-size: 11px; color: #3a3a3a; margin-top: 4px; }
-
-  .actions-placeholder { text-align: center; padding: 64px 24px; color: #333; }
-  .actions-placeholder .ph-icon { font-size: 40px; margin-bottom: 16px; opacity: 0.4; }
-  .actions-placeholder .ph-text { font-size: 13px; color: #555; line-height: 1.8; }
+  .filter-row { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; align-items:center; }
+  .flt-btn { font-size:11px; padding:5px 14px; border:1px solid #1e1e1e; border-radius:2px; background:none; color:#555; cursor:pointer; font-family:'Zen Kaku Gothic New',sans-serif; transition:all .15s; }
+  .flt-btn:hover { border-color:#7a6228; color:#c9a84c; }
+  .flt-btn.on { border-color:#c9a84c; color:#c9a84c; background:rgba(201,168,76,.07); }
+  .flt-count { font-size:11px; color:#555; margin-left:auto; }
 </style>
 </head>
 <body>
 
-<!-- UPLOAD SCREEN -->
+<!-- UPLOAD -->
 <div id="upload-screen">
   <div class="upload-label">PUBLIC MENTOR LAB × Parks Division</div>
   <div class="upload-title">OPINION<br>DASHBOARD</div>
@@ -164,7 +158,6 @@
       <button class="btn-reset" onclick="resetDashboard()">← CSV変更</button>
     </div>
   </div>
-
   <div class="tabs">
     <div class="tabs-inner">
       <button class="tab-btn active" onclick="switchTab('overview',this)">OVERVIEW</button>
@@ -192,7 +185,6 @@
         </div>
       </div>
     </div>
-
     <!-- TREND -->
     <div id="tab-trend" class="tab-pane">
       <div class="card">
@@ -200,7 +192,6 @@
         <div class="chart-wrap" style="height:320px;"><canvas id="chart-trend"></canvas></div>
       </div>
     </div>
-
     <!-- KEYWORDS -->
     <div id="tab-keywords" class="tab-pane">
       <div class="card">
@@ -209,7 +200,6 @@
         <div style="margin-top:16px;font-size:11px;color:#555;">※ ご意見テキスト内でのキーワード出現件数（1件につき1カウント）</div>
       </div>
     </div>
-
     <!-- OPINIONS -->
     <div id="tab-opinions" class="tab-pane">
       <div class="search-bar">
@@ -218,331 +208,365 @@
       </div>
       <div id="opinions-list"></div>
     </div>
-
     <!-- ACTIONS -->
     <div id="tab-actions" class="tab-pane">
-      <div class="actions-header">
-        <div>
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:#c9a84c;letter-spacing:0.1em;">AI対応アクションリスト</div>
-          <div style="font-size:11px;color:#555;margin-top:4px;">全意見をAIが分析し、テーマ別・優先度別の対応案を生成します</div>
-        </div>
-        <button class="btn-analyze" id="btn-analyze" onclick="runAnalysis()">▶ AI分析を実行</button>
-      </div>
-      <div id="actions-status"></div>
-      <div id="actions-output">
-        <div class="actions-placeholder">
-          <div class="ph-icon">🐾</div>
-          <div class="ph-text">「AI分析を実行」ボタンを押すと<br>意見テキストを読み込んで<br>対応アクションリストを生成します</div>
-        </div>
-      </div>
+      <div class="actions-kpi" id="actions-kpi"></div>
+      <div class="filter-row" id="actions-filter"></div>
+      <div id="actions-list"></div>
     </div>
   </div>
 </div>
 
 <script>
-// ── グローバル ─────────────────────────────────
 var allData = [];
 var charts = {};
-var analysisCache = null;
+var actionGroups = [];
+var checkedIds = {};
+var currentActionFilter = 'all';
 
-var KEYWORDS = ["土埃","砂埃","芝生","ウッドチップ","利用時間","開放時間","柵","フェンス","常設","広い","マナー","ゴミ","ロック","チェックイン","小型犬","大型犬","安全","有料"];
-var PIE_COLORS = ["#c9a84c","#5a8a5a","#4a6a9a","#8a4a4a","#7a5a8a","#8a7a4a"];
-var GOLD = "#c9a84c";
-var GOLD_DIM = "#7a6228";
-var BORDER = "#1e1e1e";
-var MUTED = "#555";
-var TEXT = "#e8e0cc";
+// ── キーワード定義 ─────────────────────────────────────
+var SAFETY_WORDS = ['危険','あぶない','危ない','けが','怪我','ケガ','転倒','転んだ','落ちた','刺さった','ぶつかった','骨折','出血','事故','怖い','こわい','柵が','フェンスが','穴','割れ','欠け','壊れ','破損','突き出','鋭い','とがった','血','滑った','負傷'];
+var REVIEW_WORDS = ['してほしい','して欲しい','してほしかった','あれば','あったら','改善','増やして','増やしてほしい','要望','お願い','検討','必要','整備','設置','対策','直して','直してほしい','変えて','変えてほしい','広げて','もっと','もう少し','できれば','希望','提案'];
+var FREQ_KEYWORDS = ["土埃","砂埃","芝生","ウッドチップ","利用時間","開放時間","柵","フェンス","常設","広い","マナー","ゴミ","ロック","チェックイン","小型犬","大型犬","安全","有料"];
 
-// ── CSV パース ─────────────────────────────────
+// グルーピング用テーマキーワード
+var THEME_GROUPS = [
+  { key:'地面・土埃',    words:['土埃','砂埃','地面','砂','泥','土','ウッドチップ','チップ','芝生'] },
+  { key:'柵・フェンス',  words:['柵','フェンス','囲い','出入口','ゲート'] },
+  { key:'利用時間',      words:['時間','開放','閉鎖','朝','夕方','夜','早い','遅い'] },
+  { key:'マナー・ルール',words:['マナー','ルール','守','モラル','リード','うんち','ごみ','ゴミ'] },
+  { key:'犬種・サイズ分け', words:['小型犬','大型犬','中型犬','サイズ','種類','分け','エリア','ゾーン'] },
+  { key:'施設・設備',    words:['トイレ','ベンチ','日陰','照明','水道','シャワー','足洗','屋根','休憩'] },
+  { key:'登録・チェックイン', words:['チェックイン','登録','申請','手続き','QR','アプリ'] },
+  { key:'常設・場所',    words:['常設','場所','広さ','スペース','移転','別の'] },
+  { key:'安全・事故',    words:['危険','危ない','怪我','けが','事故','転倒','骨折','安全'] },
+];
+
+var PIE_COLORS = ["#c9a84c","#5a8a5a","#4a6a9a","#8a4a4a","#7a5a8a"];
+var GOLD = "#c9a84c"; var GOLD_DIM = "#7a6228"; var BORDER = "#1e1e1e"; var MUTED = "#555"; var TEXT = "#e8e0cc";
+
+// ── CSV パース ─────────────────────────────────────────
 function parseCSV(text) {
-  var lines = text.split("\n");
-  var headers = lines[0].split(",");
-  var entries = [];
-  var i = 2;
+  var lines = text.split('\n');
+  var headers = lines[0].split(',');
+  var entries = []; var i = 2;
   while (i < lines.length) {
     var row = lines[i];
-    while ((row.match(/"/g) || []).length % 2 !== 0 && i < lines.length - 1) {
-      i++;
-      row += "\n" + lines[i];
-    }
-    if (row.trim()) {
-      var parsed = parseRow(row, headers);
-      if (parsed) entries.push(parsed);
-    }
+    while ((row.match(/"/g)||[]).length % 2 !== 0 && i < lines.length-1) { i++; row += '\n'+lines[i]; }
+    if (row.trim()) { var p = parseRow(row, headers); if (p) entries.push(p); }
     i++;
   }
   return entries;
 }
-
 function parseRow(row, headers) {
-  var fields = [];
-  var cur = "", inQ = false;
-  for (var j = 0; j < row.length; j++) {
-    var ch = row[j];
-    if (ch === '"') {
-      if (inQ && row[j+1] === '"') { cur += '"'; j++; }
-      else inQ = !inQ;
-    } else if (ch === ',' && !inQ) {
-      fields.push(cur); cur = "";
-    } else { cur += ch; }
+  var fields=[]; var cur=''; var inQ=false;
+  for (var j=0; j<row.length; j++) {
+    var ch=row[j];
+    if (ch==='"') { if (inQ&&row[j+1]==='"'){cur+='"';j++;} else inQ=!inQ; }
+    else if (ch===','&&!inQ) { fields.push(cur); cur=''; }
+    else cur+=ch;
   }
   fields.push(cur);
-  var obj = {};
-  headers.forEach(function(h, i) { obj[h.trim()] = (fields[i] || "").trim(); });
-  return obj["回答番号"] !== "" ? obj : null;
+  var obj={};
+  headers.forEach(function(h,i){ obj[h.trim()]=(fields[i]||'').trim(); });
+  return obj['回答番号']!==''?obj:null;
 }
+function getMonth(dt) { if(!dt)return null; var m=dt.match(/^(\d{4}-\d{2})/); return m?m[1]:null; }
+function escHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function truncate(s, n) { s=(s||'').trim(); return s.length>n ? s.slice(0,n)+'…' : s; }
 
-function getMonth(dt) {
-  if (!dt) return null;
-  var m = dt.match(/^(\d{4}-\d{2})/);
-  return m ? m[1] : null;
-}
-
-// ── ファイル読み込み ────────────────────────────
-var dropZone = document.getElementById('drop-zone');
-var csvInput = document.getElementById('csv-input');
-
-dropZone.addEventListener('click', function() { csvInput.click(); });
-csvInput.addEventListener('change', function(e) { if (e.target.files[0]) loadFile(e.target.files[0]); });
-dropZone.addEventListener('dragover', function(e) { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', function() { dropZone.classList.remove('drag-over'); });
-dropZone.addEventListener('drop', function(e) {
-  e.preventDefault(); dropZone.classList.remove('drag-over');
-  if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
-});
+// ── ファイル読み込み ────────────────────────────────────
+var dropZone=document.getElementById('drop-zone');
+var csvInput=document.getElementById('csv-input');
+dropZone.addEventListener('click',function(){csvInput.click();});
+csvInput.addEventListener('change',function(e){if(e.target.files[0])loadFile(e.target.files[0]);});
+dropZone.addEventListener('dragover',function(e){e.preventDefault();dropZone.classList.add('drag-over');});
+dropZone.addEventListener('dragleave',function(){dropZone.classList.remove('drag-over');});
+dropZone.addEventListener('drop',function(e){e.preventDefault();dropZone.classList.remove('drag-over');if(e.dataTransfer.files[0])loadFile(e.dataTransfer.files[0]);});
 
 function loadFile(file) {
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    allData = parseCSV(e.target.result);
-    analysisCache = null;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    allData=parseCSV(e.target.result);
+    checkedIds={};
     buildDashboard();
-    document.getElementById('upload-screen').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    switchTab('overview', document.querySelector('.tab-btn'));
+    document.getElementById('upload-screen').style.display='none';
+    document.getElementById('dashboard').style.display='block';
+    switchTab('overview',document.querySelector('.tab-btn'));
   };
-  reader.readAsText(file, 'UTF-8');
+  reader.readAsText(file,'UTF-8');
 }
-
 function resetDashboard() {
-  Object.values(charts).forEach(function(c) { if (c) c.destroy(); });
-  charts = {};
-  allData = [];
-  analysisCache = null;
-  document.getElementById('upload-screen').style.display = 'flex';
-  document.getElementById('dashboard').style.display = 'none';
-  document.getElementById('csv-input').value = '';
-  document.getElementById('actions-output').innerHTML = '<div class="actions-placeholder"><div class="ph-icon">🐾</div><div class="ph-text">「AI分析を実行」ボタンを押すと<br>意見テキストを読み込んで<br>対応アクションリストを生成します</div></div>';
-  document.getElementById('actions-status').innerHTML = '';
+  Object.values(charts).forEach(function(c){if(c)c.destroy();}); charts={};
+  allData=[]; checkedIds={}; actionGroups=[];
+  document.getElementById('upload-screen').style.display='flex';
+  document.getElementById('dashboard').style.display='none';
+  document.getElementById('csv-input').value='';
+}
+function switchTab(id,btn) {
+  document.querySelectorAll('.tab-pane').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('tab-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
 }
 
-// ── タブ切替 ───────────────────────────────────
-function switchTab(id, btn) {
-  document.querySelectorAll('.tab-pane').forEach(function(p) { p.classList.remove('active'); });
-  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
-  document.getElementById('tab-' + id).classList.add('active');
-  if (btn) btn.classList.add('active');
+// ── 意見の分類 ─────────────────────────────────────────
+function classifyOpinion(txt) {
+  for (var i=0; i<SAFETY_WORDS.length; i++) { if (txt.includes(SAFETY_WORDS[i])) return 'safety'; }
+  for (var i=0; i<REVIEW_WORDS.length; i++) { if (txt.includes(REVIEW_WORDS[i])) return 'review'; }
+  return 'ref';
 }
 
-// ── ダッシュボード構築 ─────────────────────────
+// テーマグループにマッチするか
+function matchTheme(txt, themeWords) {
+  for (var i=0; i<themeWords.length; i++) { if (txt.includes(themeWords[i])) return true; }
+  return false;
+}
+
+// グループ化：テーマ×分類でまとめる
+function buildActionGroups(data) {
+  var withText = data.filter(function(d){ return d['15:text']&&d['15:text'].trim(); });
+  var groups = [];
+  var usedIds = {};
+
+  // テーマごとにグループ作成
+  THEME_GROUPS.forEach(function(theme) {
+    var safety=[], review=[], ref=[];
+    withText.forEach(function(d) {
+      var txt = d['15:text'];
+      if (!matchTheme(txt, theme.words)) return;
+      var cat = classifyOpinion(txt);
+      var item = { num: d['回答番号'], txt: txt };
+      if (cat==='safety') safety.push(item);
+      else if (cat==='review') review.push(item);
+      else ref.push(item);
+      usedIds[d['回答番号']] = true;
+    });
+
+    // safety+review を優先グループとして出す
+    if (safety.length > 0) {
+      groups.push({ id:'g_s_'+theme.key, theme: theme.key, cat:'safety', items: safety,
+        summary: makeSummary(safety, theme.key) });
+    }
+    if (review.length > 0) {
+      groups.push({ id:'g_r_'+theme.key, theme: theme.key, cat:'review', items: review,
+        summary: makeSummary(review, theme.key) });
+    }
+    // refは件数多い場合のみ
+    if (ref.length >= 2) {
+      groups.push({ id:'g_f_'+theme.key, theme: theme.key, cat:'ref', items: ref,
+        summary: makeSummary(ref, theme.key) });
+    }
+  });
+
+  // どのテーマにも属さなかった意見を「その他」として追加
+  var unmatched = withText.filter(function(d){ return !usedIds[d['回答番号']]; });
+  if (unmatched.length > 0) {
+    var us=[], ur=[], uf=[];
+    unmatched.forEach(function(d){
+      var cat=classifyOpinion(d['15:text']);
+      var item={num:d['回答番号'],txt:d['15:text']};
+      if(cat==='safety')us.push(item);
+      else if(cat==='review')ur.push(item);
+      else uf.push(item);
+    });
+    if(us.length>0) groups.push({id:'g_s_other',theme:'その他',cat:'safety',items:us,summary:makeSummary(us,'その他')});
+    if(ur.length>0) groups.push({id:'g_r_other',theme:'その他',cat:'review',items:ur,summary:makeSummary(ur,'その他')});
+    if(uf.length>0) groups.push({id:'g_f_other',theme:'その他',cat:'ref',items:uf,summary:makeSummary(uf,'その他')});
+  }
+
+  // safety→review→ref の順でソート、件数降順
+  var order = {safety:0, review:1, ref:2};
+  groups.sort(function(a,b){
+    if(order[a.cat]!==order[b.cat]) return order[a.cat]-order[b.cat];
+    return b.items.length - a.items.length;
+  });
+
+  return groups;
+}
+
+function makeSummary(items, theme) {
+  // 最初の意見から代表テキスト生成（先頭60文字）
+  var first = items[0].txt.replace(/\n/g,' ').trim();
+  return truncate(first, 60);
+}
+
+// ── ダッシュボード構築 ─────────────────────────────────
 function buildDashboard() {
   var data = allData;
   var total = data.length;
-  var withOpinion = data.filter(function(d) { return d["15:text"] && d["15:text"].trim(); }).length;
-  var wantPerm = data.filter(function(d) { return d["2:select"] === "はい"; }).length;
-  var registered = data.filter(function(d) { return d["1:select"] === "はい"; }).length;
-  var resident = data.filter(function(d) { return d["17:select"] === "墨田区"; }).length;
-  var outsider = data.filter(function(d) { return d["17:select"] === "墨田区以外"; }).length;
+  var withOp = data.filter(function(d){return d['15:text']&&d['15:text'].trim();}).length;
+  var wantPerm = data.filter(function(d){return d['2:select']==='はい';}).length;
+  var registered = data.filter(function(d){return d['1:select']==='はい';}).length;
+  var resident = data.filter(function(d){return d['17:select']==='墨田区';}).length;
+  var outsider = data.filter(function(d){return d['17:select']==='墨田区以外';}).length;
 
-  var kpis = [
-    { label: "総回答数", value: total },
-    { label: "意見あり", value: withOpinion },
-    { label: "常設希望", value: wantPerm },
-    { label: "登録者", value: registered },
-    { label: "墨田区民", value: resident },
-    { label: "区外", value: outsider },
-  ];
-  document.getElementById('kpi-grid').innerHTML = kpis.map(function(k) {
-    return '<div class="kpi-card"><div class="kpi-value">' + k.value + '</div><div class="kpi-label">' + k.label + '</div></div>';
+  var kpis=[{label:'総回答数',value:total},{label:'意見あり',value:withOp},{label:'常設希望',value:wantPerm},{label:'登録者',value:registered},{label:'墨田区民',value:resident},{label:'区外',value:outsider}];
+  document.getElementById('kpi-grid').innerHTML=kpis.map(function(k){
+    return '<div class="kpi-card"><div class="kpi-value">'+k.value+'</div><div class="kpi-label">'+k.label+'</div></div>';
   }).join('');
 
-  var locMap = {};
-  data.forEach(function(d) { var loc = d["17:select"] || "未回答"; locMap[loc] = (locMap[loc] || 0) + 1; });
-  buildPie('chart-loc', 'legend-loc', Object.keys(locMap), Object.values(locMap), PIE_COLORS);
+  var locMap={};
+  data.forEach(function(d){var l=d['17:select']||'未回答';locMap[l]=(locMap[l]||0)+1;});
+  buildPie('chart-loc','legend-loc',Object.keys(locMap),Object.values(locMap),PIE_COLORS);
+  buildPie('chart-perm','legend-perm',['希望あり','希望なし/未回答'],[wantPerm,total-wantPerm],[GOLD,BORDER]);
 
-  var permVals = [wantPerm, total - wantPerm];
-  buildPie('chart-perm', 'legend-perm', ["希望あり","希望なし/未回答"], permVals, [GOLD, BORDER]);
+  var monthMap={};
+  data.forEach(function(d){var m=getMonth(d['回答日時']);if(m)monthMap[m]=(monthMap[m]||0)+1;});
+  var months=Object.keys(monthMap).sort();
+  buildLine('chart-trend',months.map(function(m){return m.replace('-','/');}),months.map(function(m){return monthMap[m];}));
 
-  var monthMap = {};
-  data.forEach(function(d) { var m = getMonth(d["回答日時"]); if (m) monthMap[m] = (monthMap[m] || 0) + 1; });
-  var months = Object.keys(monthMap).sort();
-  buildLine('chart-trend', months.map(function(m) { return m.replace('-','/'); }), months.map(function(m) { return monthMap[m]; }));
-
-  var kwCount = {};
-  KEYWORDS.forEach(function(kw) { kwCount[kw] = 0; });
-  data.forEach(function(d) { var txt = d["15:text"] || ""; KEYWORDS.forEach(function(kw) { if (txt.includes(kw)) kwCount[kw]++; }); });
-  var kwSorted = Object.entries(kwCount).sort(function(a,b) { return b[1]-a[1]; });
-  var maxKw = kwSorted[0] ? kwSorted[0][1] : 1;
-  document.getElementById('kw-bars').innerHTML = kwSorted.map(function(pair) {
-    var pct = maxKw > 0 ? (pair[1] / maxKw * 100) : 0;
-    return '<div class="kw-row"><div class="kw-label">' + pair[0] + '</div><div class="kw-bar-bg"><div class="kw-bar-fill" style="width:' + pct + '%"></div></div><div class="kw-count">' + pair[1] + '</div></div>';
+  var kwCount={};
+  FREQ_KEYWORDS.forEach(function(kw){kwCount[kw]=0;});
+  data.forEach(function(d){var t=d['15:text']||'';FREQ_KEYWORDS.forEach(function(kw){if(t.includes(kw))kwCount[kw]++;});});
+  var kwSorted=Object.entries(kwCount).sort(function(a,b){return b[1]-a[1];});
+  var maxKw=kwSorted[0]?kwSorted[0][1]:1;
+  document.getElementById('kw-bars').innerHTML=kwSorted.map(function(pair){
+    var pct=maxKw>0?(pair[1]/maxKw*100):0;
+    return '<div class="kw-row"><div class="kw-label">'+pair[0]+'</div><div class="kw-bar-bg"><div class="kw-bar-fill" style="width:'+pct+'%"></div></div><div class="kw-count">'+pair[1]+'</div></div>';
   }).join('');
 
   renderOpinions(data);
+
+  // ACTIONS
+  actionGroups = buildActionGroups(data);
+  renderActions();
 }
 
-function buildPie(canvasId, legendId, labels, vals, colors) {
-  if (charts[canvasId]) { charts[canvasId].destroy(); }
-  var ctx = document.getElementById(canvasId).getContext('2d');
-  charts[canvasId] = new Chart(ctx, {
-    type: 'doughnut',
-    data: { labels: labels, datasets: [{ data: vals, backgroundColor: colors, borderWidth: 0, hoverOffset: 4 }] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1a1a1a', borderColor: GOLD_DIM, borderWidth: 1, titleColor: GOLD, bodyColor: TEXT, padding: 10 } }, cutout: '60%' }
-  });
-  var total = vals.reduce(function(a,b){return a+b;},0);
-  document.getElementById(legendId).innerHTML = labels.map(function(l, i) {
-    var pct = total > 0 ? Math.round(vals[i] / total * 100) : 0;
-    return '<span><span class="legend-dot" style="background:' + (colors[i] || '#888') + '"></span>' + l + ' ' + pct + '%</span>';
+// ── ACTIONS レンダリング ───────────────────────────────
+function renderActions() {
+  var groups = actionGroups;
+  var safetyCount = groups.filter(function(g){return g.cat==='safety';}).reduce(function(s,g){return s+g.items.length;},0);
+  var reviewCount = groups.filter(function(g){return g.cat==='review';}).reduce(function(s,g){return s+g.items.length;},0);
+  var refCount    = groups.filter(function(g){return g.cat==='ref';}).reduce(function(s,g){return s+g.items.length;},0);
+
+  // KPI
+  document.getElementById('actions-kpi').innerHTML =
+    '<div class="akpi akpi-safety'+(currentActionFilter==='safety'?' selected':'')+'" onclick="setActionFilter(\'safety\')">' +
+      '<div class="akpi-icon">🚨</div><div class="akpi-body"><div class="akpi-num">'+safetyCount+'</div><div class="akpi-name">要対応（安全・危険）</div></div></div>' +
+    '<div class="akpi akpi-review'+(currentActionFilter==='review'?' selected':'')+'" onclick="setActionFilter(\'review\')">' +
+      '<div class="akpi-icon">📋</div><div class="akpi-body"><div class="akpi-num">'+reviewCount+'</div><div class="akpi-name">要検討（要望・改善）</div></div></div>' +
+    '<div class="akpi akpi-ref'+(currentActionFilter==='ref'?' selected':'')+'" onclick="setActionFilter(\'ref\')">' +
+      '<div class="akpi-icon">💬</div><div class="akpi-body"><div class="akpi-num">'+refCount+'</div><div class="akpi-name">参考（感想・報告）</div></div></div>';
+
+  // フィルターバー
+  document.getElementById('actions-filter').innerHTML =
+    '<button class="flt-btn'+(currentActionFilter==='all'?' on':'')+'" onclick="setActionFilter(\'all\')">すべて</button>' +
+    '<button class="flt-btn'+(currentActionFilter==='safety'?' on':'')+'" onclick="setActionFilter(\'safety\')">🚨 要対応</button>' +
+    '<button class="flt-btn'+(currentActionFilter==='review'?' on':'')+'" onclick="setActionFilter(\'review\')">📋 要検討</button>' +
+    '<button class="flt-btn'+(currentActionFilter==='ref'?' on':'')+'" onclick="setActionFilter(\'ref\')">💬 参考</button>' +
+    '<span class="flt-count" id="actions-flt-count"></span>';
+
+  var filtered = currentActionFilter==='all' ? groups : groups.filter(function(g){return g.cat===currentActionFilter;});
+  document.getElementById('actions-flt-count') && (document.getElementById('actions-flt-count').textContent = filtered.length+'グループ');
+
+  if (filtered.length===0) {
+    document.getElementById('actions-list').innerHTML='<div class="empty-state">該当する意見グループがありません</div>';
+    return;
+  }
+
+  document.getElementById('actions-list').innerHTML = filtered.map(function(g) {
+    var isDone = !!checkedIds[g.id];
+    var borderCls = g.cat==='safety'?'safety-group':g.cat==='review'?'review-group':'ref-group';
+    var checkCls = isDone ? 'group-check done' : 'group-check';
+    var textCls = isDone ? 'group-text done-text' : 'group-text';
+    var catLabel = g.cat==='safety'?'🚨 要対応':g.cat==='review'?'📋 要検討':'💬 参考';
+
+    var detailHtml = g.items.map(function(item) {
+      return '<div class="detail-item"><span class="detail-num">#'+item.num+'</span>'+escHtml(truncate(item.txt,120))+'</div>';
+    }).join('');
+
+    return '<div class="group-section"><div class="group-card '+borderCls+'" id="gc_'+g.id+'">' +
+      '<div class="group-header">' +
+        '<div class="'+checkCls+'" id="chk_'+g.id+'" onclick="toggleCheck(\''+g.id+'\')"></div>' +
+        '<div class="group-summary">' +
+          '<div class="group-keyword">'+catLabel+' ／ '+escHtml(g.theme)+'</div>' +
+          '<div class="'+textCls+'" id="gtxt_'+g.id+'">'+escHtml(g.summary)+'</div>' +
+        '</div>' +
+        '<div class="group-meta">' +
+          '<div><div class="group-count">'+g.items.length+'</div><div class="group-count-label">件</div></div>' +
+          '<button class="group-toggle" onclick="toggleDetail(\''+g.id+'\')">詳細</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="group-detail" id="gd_'+g.id+'">'+detailHtml+'</div>' +
+      '</div></div>';
   }).join('');
+
+  // フィルターカウント更新
+  var countEl = document.getElementById('actions-flt-count');
+  if (countEl) countEl.textContent = filtered.length+'グループ';
 }
 
-function buildLine(canvasId, labels, vals) {
-  if (charts[canvasId]) { charts[canvasId].destroy(); }
-  var ctx = document.getElementById(canvasId).getContext('2d');
-  charts[canvasId] = new Chart(ctx, {
-    type: 'line',
-    data: { labels: labels, datasets: [{ label: '件数', data: vals, borderColor: GOLD, backgroundColor: 'rgba(201,168,76,0.08)', borderWidth: 2, pointBackgroundColor: GOLD, pointRadius: 5, pointHoverRadius: 7, tension: 0.3, fill: true }] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1a1a1a', borderColor: GOLD_DIM, borderWidth: 1, titleColor: GOLD, bodyColor: TEXT, padding: 10 } }, scales: { x: { grid: { color: BORDER }, ticks: { color: MUTED, font: { size: 11 } } }, y: { grid: { color: BORDER }, ticks: { color: MUTED, font: { size: 11 } }, beginAtZero: true } } }
-  });
+function setActionFilter(cat) {
+  currentActionFilter = cat;
+  renderActions();
 }
 
+function toggleCheck(gid) {
+  checkedIds[gid] = !checkedIds[gid];
+  var chk = document.getElementById('chk_'+gid);
+  var txt = document.getElementById('gtxt_'+gid);
+  if (chk) { chk.className = checkedIds[gid]?'group-check done':'group-check'; }
+  if (txt) { txt.className = checkedIds[gid]?'group-text done-text':'group-text'; }
+}
+
+function toggleDetail(gid) {
+  var el = document.getElementById('gd_'+gid);
+  if (el) el.classList.toggle('open');
+}
+
+// ── OPINIONS ──────────────────────────────────────────
 function renderOpinions(data) {
-  var withText = data.filter(function(d) { return d["15:text"] && d["15:text"].trim(); });
-  document.getElementById('search-count').textContent = withText.length + '件';
-  document.getElementById('opinions-list').innerHTML = withText.length === 0
-    ? '<div class="empty-state">意見テキストがありません</div>'
-    : withText.map(opinionCard).join('');
+  var withText=data.filter(function(d){return d['15:text']&&d['15:text'].trim();});
+  document.getElementById('search-count').textContent=withText.length+'件';
+  document.getElementById('opinions-list').innerHTML=withText.length===0
+    ?'<div class="empty-state">意見テキストがありません</div>'
+    :withText.map(opinionCard).join('');
 }
-
 function filterOpinions() {
-  var q = document.getElementById('search-input').value.trim();
-  var filtered = allData.filter(function(d) {
-    var txt = d["15:text"] || "";
-    if (!txt.trim()) return false;
-    if (!q) return true;
-    return txt.includes(q) || (d["17:select"] || "").includes(q) || (d["18:select"] || "").includes(q);
+  var q=document.getElementById('search-input').value.trim();
+  var filtered=allData.filter(function(d){
+    var t=d['15:text']||'';
+    if(!t.trim())return false;
+    if(!q)return true;
+    return t.includes(q)||(d['17:select']||'').includes(q)||(d['18:select']||'').includes(q);
   });
-  document.getElementById('search-count').textContent = filtered.length + '件';
-  document.getElementById('opinions-list').innerHTML = filtered.length === 0
-    ? '<div class="empty-state">該当する意見がありません</div>'
-    : filtered.map(opinionCard).join('');
+  document.getElementById('search-count').textContent=filtered.length+'件';
+  document.getElementById('opinions-list').innerHTML=filtered.length===0
+    ?'<div class="empty-state">該当する意見がありません</div>'
+    :filtered.map(opinionCard).join('');
 }
-
 function opinionCard(d) {
-  var loc = d["17:select"] || "";
-  var area = d["18:select"] || "";
-  var locStr = loc + (area ? ' / ' + area : '');
-  var perm = d["2:select"] === "はい";
-  var date = (d["回答日時"] || "").slice(0,10);
-  return '<div class="opinion-card">' +
-    '<div class="opinion-meta">' +
-      '<span class="opinion-num">#' + d["回答番号"] + '</span>' +
-      '<span class="opinion-date">' + date + '</span>' +
-      (locStr ? '<span class="tag">' + locStr + '</span>' : '') +
-      (perm ? '<span class="tag filled">常設希望</span>' : '') +
-    '</div>' +
-    '<div class="opinion-text">' + escHtml(d["15:text"]) + '</div>' +
+  var loc=d['17:select']||''; var area=d['18:select']||'';
+  var locStr=loc+(area?' / '+area:'');
+  var perm=d['2:select']==='はい';
+  var date=(d['回答日時']||'').slice(0,10);
+  return '<div class="opinion-card">'+
+    '<div class="opinion-meta">'+
+      '<span class="opinion-num">#'+d['回答番号']+'</span>'+
+      '<span class="opinion-date">'+date+'</span>'+
+      (locStr?'<span class="tag">'+locStr+'</span>':'')+
+      (perm?'<span class="tag filled">常設希望</span>':'')+
+    '</div>'+
+    '<div class="opinion-text">'+escHtml(d['15:text'])+'</div>'+
     '</div>';
 }
 
-function escHtml(str) {
-  return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-// ── AI分析 ────────────────────────────────────
-async function runAnalysis() {
-  if (analysisCache) {
-    renderActions(analysisCache);
-    return;
-  }
-
-  var opinions = allData.filter(function(d) { return d["15:text"] && d["15:text"].trim(); });
-  if (opinions.length === 0) {
-    document.getElementById('actions-status').innerHTML = '<div class="ai-status">意見テキストがありません</div>';
-    return;
-  }
-
-  var btn = document.getElementById('btn-analyze');
-  btn.disabled = true;
-  document.getElementById('actions-status').innerHTML = '<div class="ai-loading"><span class="spinner"></span>AIが' + opinions.length + '件の意見を分析中…</div>';
-  document.getElementById('actions-output').innerHTML = '';
-
-  // 意見テキストをまとめる（長すぎる場合は先頭200文字に制限）
-  var opinionTexts = opinions.map(function(d, i) {
-    var txt = d["15:text"].trim().slice(0, 300);
-    return (i+1) + '. ' + txt;
-  }).join('\n\n');
-
-  var prompt = 'あなたは公園管理の専門アドバイザーです。以下はすみだドッグパークに寄せられた市民の意見（' + opinions.length + '件）です。\n\n' + opinionTexts + '\n\n---\n\nこれらの意見を分析し、区の担当者が実際に対応できるアクションリストをJSONで出力してください。\n\n以下の形式で必ず純粋なJSONのみを返してください（マークダウン記法不要）:\n{\n  "themes": [\n    {\n      "name": "テーマ名（例：地面・砂埃対策）",\n      "count": 件数（数字）,\n      "actions": [\n        {\n          "priority": "high" または "mid" または "low",\n          "title": "具体的なアクション（30字以内）",\n          "detail": "詳細説明（60字以内）",\n          "source": "関連する意見の要約（40字以内）"\n        }\n      ]\n    }\n  ]\n}\n\nテーマは5〜7個、各テーマに2〜4個のアクションを含めてください。priorityはhigh（早急対応）・mid（中期対応）・low（検討課題）の3段階で判断してください。';
-
-  try {
-    var response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-
-    var data = await response.json();
-    var rawText = data.content.filter(function(c) { return c.type === 'text'; }).map(function(c) { return c.text; }).join('');
-
-    // JSON抽出
-    var clean = rawText.replace(/```json|```/g, '').trim();
-    var jsonMatch = clean.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('JSON形式で返ってきませんでした');
-    var result = JSON.parse(jsonMatch[0]);
-
-    analysisCache = result;
-    document.getElementById('actions-status').innerHTML = '';
-    renderActions(result);
-  } catch(err) {
-    document.getElementById('actions-status').innerHTML = '<div class="ai-status">エラーが発生しました: ' + err.message + '</div>';
-    document.getElementById('actions-output').innerHTML = '<div class="actions-placeholder"><div class="ph-icon">⚠️</div><div class="ph-text">分析に失敗しました。<br>もう一度試してください。</div></div>';
-  } finally {
-    btn.disabled = false;
-  }
-}
-
-function renderActions(result) {
-  if (!result || !result.themes) return;
-
-  var html = result.themes.map(function(theme) {
-    var actionsHtml = (theme.actions || []).map(function(a) {
-      var prioClass = a.priority === 'high' ? 'priority-high' : a.priority === 'mid' ? 'priority-mid' : 'priority-low';
-      var prioLabel = a.priority === 'high' ? '早急' : a.priority === 'mid' ? '中期' : '検討';
-      return '<div class="action-item">' +
-        '<div class="action-priority ' + prioClass + '">' + prioLabel + '</div>' +
-        '<div class="action-body">' +
-          '<div class="action-title">' + escHtml(a.title) + '</div>' +
-          '<div class="action-detail">' + escHtml(a.detail) + '</div>' +
-          (a.source ? '<div class="action-source">声の根拠: ' + escHtml(a.source) + '</div>' : '') +
-        '</div>' +
-        '</div>';
-    }).join('');
-
-    return '<div class="card theme-section">' +
-      '<div class="theme-header">' +
-        '<span class="theme-name">' + escHtml(theme.name) + '</span>' +
-        (theme.count ? '<span class="theme-count">関連意見 約' + theme.count + '件</span>' : '') +
-      '</div>' +
-      actionsHtml +
-      '</div>';
+// ── チャート ───────────────────────────────────────────
+function buildPie(canvasId,legendId,labels,vals,colors) {
+  if(charts[canvasId])charts[canvasId].destroy();
+  var ctx=document.getElementById(canvasId).getContext('2d');
+  charts[canvasId]=new Chart(ctx,{type:'doughnut',data:{labels:labels,datasets:[{data:vals,backgroundColor:colors,borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a1a1a',borderColor:GOLD_DIM,borderWidth:1,titleColor:GOLD,bodyColor:TEXT,padding:10}},cutout:'60%'}});
+  var total=vals.reduce(function(a,b){return a+b;},0);
+  document.getElementById(legendId).innerHTML=labels.map(function(l,i){
+    var pct=total>0?Math.round(vals[i]/total*100):0;
+    return '<span><span class="legend-dot" style="background:'+(colors[i]||'#888')+'"></span>'+l+' '+pct+'%</span>';
   }).join('');
-
-  document.getElementById('actions-output').innerHTML = html;
+}
+function buildLine(canvasId,labels,vals) {
+  if(charts[canvasId])charts[canvasId].destroy();
+  var ctx=document.getElementById(canvasId).getContext('2d');
+  charts[canvasId]=new Chart(ctx,{type:'line',data:{labels:labels,datasets:[{label:'件数',data:vals,borderColor:GOLD,backgroundColor:'rgba(201,168,76,0.08)',borderWidth:2,pointBackgroundColor:GOLD,pointRadius:5,pointHoverRadius:7,tension:0.3,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a1a1a',borderColor:GOLD_DIM,borderWidth:1,titleColor:GOLD,bodyColor:TEXT,padding:10}},scales:{x:{grid:{color:BORDER},ticks:{color:MUTED,font:{size:11}}},y:{grid:{color:BORDER},ticks:{color:MUTED,font:{size:11}},beginAtZero:true}}}});
 }
 </script>
 </body>
